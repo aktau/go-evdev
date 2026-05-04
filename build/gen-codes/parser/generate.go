@@ -45,7 +45,7 @@ var SelectedPrefixesGroups = map[string][][]string{
 }
 
 // stripSeparators removes separators from the begging and the end
-func stripSeparators(elements []interface{}) []interface{} {
+func stripSeparators(elements []any) []any {
 	var start, stop int
 
 	for i, e := range elements {
@@ -77,7 +77,7 @@ func removeRepeatedSeparators(groups []Group) []Group {
 	for _, group := range groups {
 		newGroup := Group{
 			comment:  group.comment,
-			elements: make([]interface{}, 0),
+			elements: make([]any, 0),
 		}
 
 		var sepPreviously bool
@@ -267,17 +267,17 @@ func generateSections(rawGroups []Group, disableComments bool) (codes, typeToStr
 					continue
 				}
 
-				var names string
+				var names strings.Builder
 				for i, name := range duplicates[decoded.value] {
-					names += name
+					names.WriteString(name)
 					if i != len(duplicates[decoded.value])-1 {
-						names += "/"
+						names.WriteString("/")
 					}
 				}
 
 				switch decoded.encodingType {
 				case EncodingHex, EncodingInteger:
-					typeNames += fmt.Sprintf("\t%s: \"%s\",\n", v.name, names)
+					typeNames += fmt.Sprintf("\t%s: \"%s\",\n", v.name, names.String())
 					valueRegistered[decoded.value] = v.name
 				default:
 					panic("unexpected encoding type")

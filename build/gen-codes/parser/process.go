@@ -125,13 +125,13 @@ func (c *constant) resolveText(group *Group) (EncodingType, int, error) {
 // Group contains list of elements (separator, comment or constant)
 type Group struct {
 	comment  string
-	elements []interface{}
+	elements []any
 }
 
 func NewGroup() Group {
 	return Group{
 		comment:  "",
-		elements: make([]interface{}, 0),
+		elements: make([]any, 0),
 	}
 }
 
@@ -157,7 +157,7 @@ func hasPrefixInSlice(v string, s []string) bool {
 type CodeProcessor struct {
 	prefixesGroups [][]string
 
-	elements    []interface{}
+	elements    []any
 	lastComment string
 	state       int
 }
@@ -166,7 +166,7 @@ func NewCodeProcessor(prefixesGroups [][]string) CodeProcessor {
 	return CodeProcessor{
 		prefixesGroups: prefixesGroups,
 
-		elements:    make([]interface{}, 0),
+		elements:    make([]any, 0),
 		lastComment: "",
 		state:       stateNeutral,
 	}

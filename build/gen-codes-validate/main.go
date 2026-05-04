@@ -17,8 +17,8 @@ type evTypeFromString = map[string]evdev.EvType
 
 type testPair struct {
 	name       string
-	toString   interface{}
-	fromString interface{}
+	toString   any
+	fromString any
 }
 
 var testingSet = []testPair{
