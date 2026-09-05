@@ -145,8 +145,9 @@ func ioctlEVIOCSMASK(fd uintptr, mask InputMask) error {
 	return doIoctl(fd, code, unsafe.Pointer(&mask))
 }
 
-// Userspace version of evdev_get_mask_cnt from linux/drivers/input/evdev.c.
-func countForType(t EvType) int {
+// count returns an upper bound on the number of distinct events in t. Userspace
+// version of evdev_get_mask_cnt from linux/drivers/input/evdev.c.
+func (t EvType) count() int {
 	switch t {
 	case EV_SYN: // == 0
 		// special case, indicating the list of all feature types supported should be returned,
@@ -176,7 +177,7 @@ func countForType(t EvType) int {
 }
 
 func ioctlEVIOCGBIT(fd uintptr, evtype int) ([]byte, error) {
-	cnt := cmp.Or(countForType(EvType(evtype)), KEY_MAX) // TODO: handle truncation.
+	cnt := cmp.Or(EvType(evtype).count(), KEY_MAX) // TODO: handle truncation.
 
 	bytesNumber := (cnt + 7) / 8
 

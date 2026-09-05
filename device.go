@@ -296,7 +296,12 @@ func (d *InputDevice) SetMask(mask Mask) error {
 			bits.clear(int(code))
 		}
 	}
+	// Ensure the GC does not collected the bitmask until _after_ the ioctl has
+	// returned. An alternative would be to make [CodesPtr] an [unsafe.Pointer],
+	// but that would not work well on 32-bit as the kernel still expects a 64-bit
+	// integer.
 	defer runtime.KeepAlive(bits.bits)
+
 	return ioctlEVIOCSMASK(d.file.Fd(), InputMask{
 		Type:      uint32(mask.typ),
 		CodesSize: uint32(len(bits.bits)),
